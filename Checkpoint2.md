@@ -114,52 +114,141 @@ Write-Host "Le compte $Name est déja crée" -ForegroundColor Red
     - Rôles installés : **AD, DHCP, DNS**
     - Configuration IP : **172.16.0.250 /24**
 
- [Toute la partie de l'exo qui necessite d'être fait avec le serveur DC => Effectué en dehors du timing car durant le jour du checkpoint, mon internet est instable, lente et après 5 essaies/coupures via wifi et point d'acces wifi mobile, ça ne se fait toujours pas.)
+ [Toute la partie de l'exo qui necessite d'être fait avec le serveur DC => Effectué en dehors du timing car durant le jour du checkpoint, mon internet est instable, lente et après 5 essaies/coupures via wifi et point d'acces wifi mobile, ça ne se fait toujours pas.]
 
 
-Tu va devoir créer une deuxième VM **Client1** avec les caractéristiques suivantes :
+> Tu va devoir créer une deuxième VM **Client1** avec les caractéristiques suivantes :
 
-- Client
-- OS : Windows 10
-- Disque : 50 Go (1 partition pour le système de 35 Go et 1 partition Data de 15 Go)
-- RAM : 1 Go
+> - Client
+> - OS : Windows 10
+> - Disque : 50 Go (1 partition pour le système de 35 Go et 1 partition Data de 15 Go)
+> - RAM : 1 Go
 
 <img src = https://github.com/Fairskip/Checkpoint2/blob/main/Caracteristiques%201.png width = "550" height = "300">
 
 <img src = https://github.com/Fairskip/Checkpoint2/blob/main/DD.png width = "700" height = "80">
 
+<br>
   
-- Compte utilisateur : wilder/Azerty123!
+> - Compte utilisateur : wilder/Azerty123!
 
 <img src = https://github.com/Fairskip/Checkpoint2/blob/main/wilder.png width = "300" height = "350">
 
+<br>
 
-- Configuration IP : DHCP
+> - Configuration IP : DHCP
 
 <img src = https://github.com/Fairskip/Checkpoint2/blob/main/IP%20Dynamic.png width = "300" height = "350">
 
-- Hostname : Change le hostname en Client1
+<br>
 
-<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Client1.png width = "300" height = "350">
+> - Hostname : Change le hostname en Client1
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Client1.png width = "350" height = "300">
+
+<br>
+
+> - Rejoindre le domaine : 
+
+  <img src = https://github.com/Fairskip/Checkpoint2/blob/main/Client1%20a%20join%20domaine%202.png width = "500" height = "200">
+
 
 <br>
 
 #### Sur la VM **Client1** :
 
-1. Entre le PC **Client1** et le serveur **DC**, le ping ne fonctionne pas. Pourquoi ?  
-    Change le paramétrage des machines pour que cela soit possible.  
-    Explique ce que tu as fait sur les 2 machines.
+> 1. Entre le PC **Client1** et le serveur **DC**, le ping ne fonctionne pas. Pourquoi ?  
 
+Client1 | Server
+:---: | :---:
+169.254.124.220/16 | Serveur : 172.16.0.250 /24
+
+Ils n'ont pas le même réseau d'adresse Ip ou de masque sous-réseau. Donc ils ne sont pas dans le même réseau.
+
+<br>
+
+> Change le paramétrage des machines pour que cela soit possible.  
+> Explique ce que tu as fait sur les 2 machines.
+
+Essayer un config release et renew sur Client1 ne marche pas. Et sur le server, je ne vois pas de plage d'adresse disponible dans le DHCP. Cependant, lorsque je regard le service DNS, il y a un Host1 avec une adresse IP déterminé (172.16.0.10). 
+
+Dans le serveur, je crée donc une nouvelle étendu vu dans le point 5 de l'exercice et je réserve l'IP 172.16.0.10 pour Client1.
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Etendue.png width = "650" height = "150">
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Release%20et%20renew%20Client1.png width = "500" height = "300">
+
+<br>
+
+Dans le pc Client1, pour être sur que le system trouve le serveur, j'entre dans le dns préféré l'IP du serveur. 
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/DNS%20au%20client1.png width = "300" height = "350">
+
+<br>
+
+Pour être tranquille, j'ai même créer une règle entrante pour le firewall permettant le ping.
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Regle%20ping.png width = "400" height = "350">
+
+<br>
+
+Une fois faites, je fais un ipconfig release et renew et obtiens ainsi une adresse IP dans le même réseau que celui du serveur pour mon Client1. 
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Release%20et%20renew%20Client1.png width = "450" height = "550">
+
+<br>
+
+Et ça ping dans les deux sens.
+
+Server au Client :   
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Ping%20Client%202.png width = "500" height = "400">
+
+Client au Serveur :   
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Ping%20server%202.png width = "500" height = "400">
+
+
+<br>
 
 2. Tente de te connecter avec l'utilisateur john.doe/Azerty123! sur Client1.
-
-
 3. Tente de te connecter avec l'utilisateur jane.doe/Azerty123! sur Client1.  
     Quel est la différence entre les deux utilisateurs ?
 
 
+Lors de ma première connection avec John, ça me demande de changer le mot de passe.
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/John1.png width = "400" height = "450">
+
+Pour Jane.doe, le compte a été désactivé.
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Jane.png width = "400" height = "450">
+
+<br>
+
 4. Que dois-tu faire pour pouvoir te connecter avec le comtpe de John Doe sur le Client1 ?  
     Explique et fais l'action.
+   
+En me déconnectant de la session de **wilder**, j'arrive à une page de présentation qui me permet de choisir entre la session de **wilder** et de **Autre utilisateur**. 
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/sessions.png width = "250" height = "200">
+
+
+Je choisis **Autre utilisateur**.
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Autre%20utilisateur.png width = "450" height = "450">
+
+
+J'entre l'ID **john.doe** dans la case du **Nom d'utilisateur** puis **Azerty123!** dans la case **mot de passe**. Une fois faite, ça me dit que le mot de passe doit être changé avant la première connexion. 
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/John1.png width = "400" height = "450">
+
+
+Je clique sur **Ok**.
+
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/John2.png width = "400" height = "450">
+
+Je remplis les cases et crée le nouveau mot de mot sur la troisième case et quatrième case. Puis je valide en appuyant sur la petite flèche qui part vers la droite sur la dernière case ou en appuyant sur la touche **Entrée**. 
 
 
 
@@ -167,22 +256,36 @@ Tu va devoir créer une deuxième VM **Client1** avec les caractéristiques su
 
 #### Sur la VM **DC** :
 
-5. Configure le serveur DHCP pour adresser entre **172.16.0.10** et **172.16.0.199**
+> 5. Configure le serveur DHCP pour adresser entre **172.16.0.10** et **172.16.0.199**
 
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/Etendue.png width = "600" height = "100">
 
-6. Fait un enregistrement de type A pointant vers **172.16.0.254** nommé **pfsense**.
+<br>
 
+> 6. Fait un enregistrement de type A pointant vers **172.16.0.254** nommé **pfsense**.
+> 7. Fait un alias sur l'enregistrement de type A qui s'appelle **firewall** (172.16.0.254).
 
-7. Fait un alias sur l'enregistrement de type A qui s'appelle **firewall** (172.16.0.254).
+<img src = https://github.com/Fairskip/Checkpoint2/blob/main/a%20et%20cname.png width = "600" height = "100">
 
+<br>
 
-8. Tu vas devoir créer des GPO qui s'appliquera aux utilisateurs.
-    1. Les utilisateurs n'ont pas accès à l'invite de commande et au powershell.
+> 8. Tu vas devoir créer des GPO qui s'appliquera aux utilisateurs.
+>    * Les utilisateurs n'ont pas accès à l'invite de commande et au powershell. 
+>    * Les utilisateurs ont un fond d'écran imposé par l'entreprise [Télécharge l'image ici](https://drive.google.com/file/d/1dekvQBWvbXaougv3t2ournK5L92od1ex/view?usp=drive_link)
+
+![gpo3](https://github.com/Fairskip/Checkpoint2/blob/main/GPO3.png)
+![gpo2](https://github.com/Fairskip/Checkpoint2/blob/main/GPO2.png)
+
+<br>
     
-    
-    2. Les utilisateurs ont un fond d'écran imposé par l'entreprise [Télécharge l'image ici](https://drive.google.com/file/d/1dekvQBWvbXaougv3t2ournK5L92od1ex/view?usp=drive_link)
-    
-    
-    3. Les utilisateurs du domaine peuvent se connecter sur le poste **Client1 uniquement entre 9h et 17h**.
+>    * Les utilisateurs du domaine peuvent se connecter sur le poste **Client1 uniquement entre 9h et 17h**.
+
+Sur le terminal en manuel et/ou avec un script : 
+
+```
+net Username /Times:M-F,09:00-17:00;Sa-Su,00:00-23:59
+```
+
+
   
 
