@@ -40,27 +40,35 @@ Tu dois faire fonctionner ce script correctement avec la correction de tous les 
 
 Les points à corriger sont indépendant donc tu n'est pas obligé de suivre l'ordre.
 
+<br>
+
 1. La création d'un utilisateurs nommé "`prenom nom`" est systématique et amène une erreur. C'est à corriger.
 
 ```
 $SamAccountName = "$($User.prenom $User.nom)"
 ```
 
+<br>
 
 2. Le mot de passe par défaut des utilisateurs est toujours le même car il est statique dans le script. Ton collègue a prévu une fonction `Random-Password` mais elle n'est pas utilisée. Tu dois t'en servir pour avoir des mots de passe dynamiques. Il faut que ce mot de passe comporte au moins **12 caractères**. (Effectué en dehors du timing)
 
+<br>
 
 3. Le mot de passe des utilisateurs n'est pas affiché à la fin. A la place on a `System.Security.SecureString`. Il faut qu'il apparaisse en clair. (Effectué en dehors du timing)
 
+<br>
 
 4. Le nom de la société (`Sweetcakes`) est statique. On doit pouvoir le modifier par une variable car ce script doit pouvoir servir pour d'autres sociétés. (Effectué en dehors du timing)
 
+<br>
 
 5. Quelques fois les utilisateurs qui ont des accents dans leur nom ou leur prénom sont mal entré dans l'AD. C'est à corriger. (Effectué en dehors du timing)
 
+<br>
 
 6. Les utilisateurs des services **Marketing** et **Comptabilité** ne sont pas créée. Il faut voir pourquoi. (Effectué en dehors du timing)
 
+<br>
 
 7. Les numéros de téléphone de bureau et de mobile des utilisateurs sont inversé, c'est à corrigé.
 
@@ -71,16 +79,21 @@ $OfficePhone = $User.telephoneNumber
 
 ```
 
+<br>
+
 8. Le script n'est pas du tout commenté. Tu dois mettre des commentaires à chaque `###`.
 
->### Scripte permettant de créer des utilisateurs à partir d'un fichier CSV
->### Full Path du fichier csv à importer et filtrer le fichier pour récupérer les colonnes voulues.
->### Création de comptes d'users de l'entreprise.
->###Titre de la tache à accomplir.
->###List des éléments qu'on veut afficher.
->### Output en plus propre
->### Si compte existe déjà: 
- 
+```
+> # Scripte permettant de créer des utilisateurs à partir d'un fichier CSV
+> # Full Path du fichier csv à importer et filtrer le fichier pour récupérer les colonnes voulues.
+> # Création de comptes d'users de l'entreprise.
+> # Titre de la tache à accomplir.
+> #List des éléments qu'on veut afficher.
+> # Output en plus propre
+> # Si compte existe déjà: 
+ ```
+
+<br>
 
 9. Ton collègue a oublié de mettre le mail des utilisateurs. Tu dois ajouter cette information dans la création.
 
@@ -88,9 +101,11 @@ $OfficePhone = $User.telephoneNumber
 -Email $Email
 ```
 
+<br>
+
 10. L'information indiquant que le compte xxx est déjà créée donne toujours le même nom. C'est à corriger. (Effectué en dehors du timing)
 
-
+<br>
 
 11. L'information indiquant que le compte a été crée doit apparaître en **vert** et si le compte existe déjà cela doit apparaître en **rouge**.
 
